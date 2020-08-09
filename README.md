@@ -61,4 +61,7 @@ KittyTerminalImages can display all data types than can be converted to either `
 
 ## Screenshots
 
-![](https://github.com/simonschoelly/KittyTerminalImages.jl/blob/master/screenshots/screenshot1.png)
+| <img src="https://github.com/simonschoelly/KittyTerminalImages.jl/blob/master/screenshots/screenshot-colors.png" alt="Colors.jl" style="zoom:50%;" /> | <img src="https://github.com/simonschoelly/KittyTerminalImages.jl/blob/master/screenshots/screenshot-images.png" alt="Images.jl" style="zoom:50%;" /> | <img src="https://github.com/simonschoelly/KittyTerminalImages.jl/blob/master/screenshots/screenshot-plots.png" alt="Plots.jl" style="zoom:50%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| <img src="https://github.com/simonschoelly/KittyTerminalImages.jl/blob/master/screenshots/screenshot-luxor.png" alt="Luxor.jl" style="zoom:50%;" /> | <img src="https://github.com/simonschoelly/KittyTerminalImages.jl/blob/master/screenshots/screenshot-juliagraphs.png" alt="JuliaGraphs" style="zoom:50%;" /> |                                                              |
+
