@@ -1,23 +1,27 @@
 module KittyTerminalImages
 
-using FileIO: save, Stream, @format_str
+using FileIO: load, save, Stream, @format_str
 using Base64: base64encode
 using Rsvg
 using Cairo: FORMAT_ARGB32, CairoImageSurface, CairoContext
+import Cairo
 using Base.Multimedia: xdisplayable
+using ImageTransformations: imresize
 
 import Base: display
 
-export pushKittyDisplay!, forceKittyDisplay!
+export pushKittyDisplay!, forceKittyDisplay!, set_kitty_config!, get_kitty_config
 
 
 struct KittyDisplay <: AbstractDisplay end
+
+include("configuration.jl")
 
 function __init__()
     # TODO verify that we are actually using kitty
     pushKittyDisplay!()
 end
-    
+
 
 function draw_temp_file(path::String)
     cmd_prefix = transcode(UInt8, "\033_Gf=100,t=t,X=1,Y=1,a=T;")
@@ -62,7 +66,11 @@ function pushKittyDisplay!()
     return
 end
 
-kitty_mime_types = [MIME"image/png"(), MIME"image/svg+xml"()]
+# Supported mime types, they are tried in order that they appear in this list
+# svg is before png so that we can apply scaling to a vector graphics instead of
+# pixels if both formats are supported
+
+kitty_mime_types = [MIME"image/svg+xml"(), MIME"image/png"()]
 
 function display(d::KittyDisplay, x)
     for m in kitty_mime_types
@@ -77,27 +85,35 @@ end
 # TODO ensure that there is no racing condition with these tempfiles
 
 function display(d::KittyDisplay,
-                 m::MIME"image/png", x)
+                 m::MIME"image/png", x; scale=get_kitty_config(:scale, 1.0))
+    buff = IOBuffer()
+    show(buff, m, x)
+    img = load(Stream(format"PNG", buff))
+    img = imresize(img; ratio=scale)
+
     path, io = mktemp()
-    show(io, m, x)
+    save(Stream(format"PNG", io), img)
     close(io)
     draw_temp_file(path)
     return
 end
 
 function display(d::KittyDisplay,
-                 m::MIME"image/svg+xml", x)
+                 m::MIME"image/svg+xml", x; scale=get_kitty_config(:scale, 1.0))
     # Write x to a cairo buffer a and the use the png display method
     buff = IOBuffer()
     show(buff, m, x)
     svg_data = String(take!(buff))
     handle = Rsvg.handle_new_from_data(svg_data)
     dims = Rsvg.handle_get_dimensions(handle)
-    surface = CairoImageSurface(dims.width, dims.height, FORMAT_ARGB32)
+    width = round(Int, dims.width * scale)
+    height = round(Int, dims.height * scale)
+    surface = CairoImageSurface(width, height, FORMAT_ARGB32)
     context = CairoContext(surface)
+    Cairo.scale(context, scale, scale)
     Rsvg.handle_render_cairo(context, handle)
     # Rsvg.handle_free(handle) # this leads to error messages
-    display(d, MIME"image/png"(), surface)
+    display(d, MIME"image/png"(), surface; scale=1.0) # scaling already happened to svg
     return
 end
 

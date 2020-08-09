@@ -30,6 +30,13 @@ unwanted side effects. To do that, execute the following:
 forceKittyDisplay!()
 ```
 
+### Setting the scale
+If the images are too small or too large for your terminal,
+you can specify a scale
+```julia
+set_kitty_config!(:scale, 2.0) # scale all images by a factor 2
+```
+
 ## Features
 KittyTerminalImages can display all data types than can be converted to either `png` or `svg`.
 
@@ -42,7 +49,7 @@ KittyTerminalImages can display all data types than can be converted to either `
 - [ ] Display LaTex images.
 - [ ] Support for SSH.
 - [ ] Support for Tmux and screen.
-- [ ] Add an option for setting the image output size.
+- [x] Add an option for setting the image output size.
 - [ ] Query for the terminal size and colors.
 - [ ] Ensure that kitty is the actual terminal emulator.
 
