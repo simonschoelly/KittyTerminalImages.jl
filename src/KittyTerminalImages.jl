@@ -10,6 +10,10 @@ using ImageTransformations: imresize
 
 import Base: display
 
+# this seem to be necessary to enforce the usage of ImageMagic -- ImageIO
+# produces an eof error.
+using ImageMagick
+
 export pushKittyDisplay!, forceKittyDisplay!, set_kitty_config!, get_kitty_config
 
 
