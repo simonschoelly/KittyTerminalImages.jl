@@ -65,5 +65,6 @@ KittyTerminalImages can display all data types than can be converted to either `
 
 ## Similar packages
 * [TerminalExtensions.jl](https://github.com/Keno/TerminalExtensions.jl)
+* [ImageInTerminal.jl](https://github.com/JuliaImages/ImageInTerminal.jl)
 * [TerminalGraphics.jl](https://github.com/m-j-w/TerminalGraphics.jl) (outdated)
 * [SixelTerm.jl](https://github.com/tshort/SixelTerm.jl) (outdated)
