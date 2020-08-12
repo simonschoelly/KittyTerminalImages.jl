@@ -5,12 +5,20 @@
 A package that allows Julia to display images in the kitty terminal editor. This package is in an experimental stage and might
 be added to [TerminalExtensions.jl](https://github.com/Keno/TerminalExtensions.jl) later.
 
+## Screenshots
+| | | |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| <figure><img src="https://github.com/simonschoelly/KittyTerminalImages.jl/blob/master/screenshots/screenshot-colors.png" alt="Colors.jl" style="zoom:50%;" /><figcaption>Colors.jl</figcaption></figure> | <figure><img src="https://github.com/simonschoelly/KittyTerminalImages.jl/blob/master/screenshots/screenshot-images.png" alt="Images.jl" style="zoom:50%;" /><figcaption>Images.jl</figcaption></figure> | <img src="https://github.com/simonschoelly/KittyTerminalImages.jl/blob/master/screenshots/screenshot-plots.png" alt="Plots.jl" style="zoom:50%;" /><figcaption>Plots.jl</figcaption></figure> |
+| <figure><img src="https://github.com/simonschoelly/KittyTerminalImages.jl/blob/master/screenshots/screenshot-luxor.png" alt="Luxor.jl" style="zoom:50%;" /><figcaption>Luxor.jl</figcaption></figure> | <figure><img src="https://github.com/simonschoelly/KittyTerminalImages.jl/blob/master/screenshots/screenshot-juliagraphs.png" alt="JuliaGraphs" style="zoom:50%;" /><figcaption>JuliaGraphs</figcaption></figure> |                                                              |
+
+
+
 ## Installation
-KittyTerminalImages.jl is currently not a registred Julia package. Therefore to install it enter the following in your REPL:
+KittyTerminalImages.jl can be installed from the package manager by typing the following to your REPL:
 ```julia
-] add "https://github.com/simonschoelly/KittyTerminalImages.jl"
+] add KittyTerminalImages
 ```
-In addition you will need install the Kitty terminal emulator. You can get it here: https://github.com/kovidgoyal/kitty
+In addition you will need install the Kitty terminal emulator. It works on macOS or Linux but (at least currently) not on Windows. You can get it here: https://github.com/kovidgoyal/kitty
 
 
 ## Usage
@@ -44,6 +52,7 @@ KittyTerminalImages can display all data types than can be converted to either `
 * Does not work over SSH yet.
 * Does not work with Tmux or screen yet.
 * Can only display static images, there is no interaction.
+* There might be some problems with some Julia packages. If that is the case, feel free to open an issue or submit a PR with a fix.
 
 ## TODO list
 - [ ] Display LaTex images.
@@ -58,10 +67,3 @@ KittyTerminalImages can display all data types than can be converted to either `
 * [TerminalExtensions.jl](https://github.com/Keno/TerminalExtensions.jl)
 * [TerminalGraphics.jl](https://github.com/m-j-w/TerminalGraphics.jl) (outdated)
 * [SixelTerm.jl](https://github.com/tshort/SixelTerm.jl) (outdated)
-
-## Screenshots
-
-| <img src="https://github.com/simonschoelly/KittyTerminalImages.jl/blob/master/screenshots/screenshot-colors.png" alt="Colors.jl" style="zoom:50%;" /> | <img src="https://github.com/simonschoelly/KittyTerminalImages.jl/blob/master/screenshots/screenshot-images.png" alt="Images.jl" style="zoom:50%;" /> | <img src="https://github.com/simonschoelly/KittyTerminalImages.jl/blob/master/screenshots/screenshot-plots.png" alt="Plots.jl" style="zoom:50%;" /> |
-| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| <img src="https://github.com/simonschoelly/KittyTerminalImages.jl/blob/master/screenshots/screenshot-luxor.png" alt="Luxor.jl" style="zoom:50%;" /> | <img src="https://github.com/simonschoelly/KittyTerminalImages.jl/blob/master/screenshots/screenshot-juliagraphs.png" alt="JuliaGraphs" style="zoom:50%;" /> |                                                              |
-
