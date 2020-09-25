@@ -45,6 +45,17 @@ you can specify a scale
 set_kitty_config!(:scale, 2.0) # scale all images by a factor 2
 ```
 
+### Setting the transfer mode
+To transfer the image from Julia to kitty, one can select between two transfer modes:
+* `:direct` (default) -- transfer the imagine with escape sequences
+* `:temp_file` -- transfer the imagine by writting it to a temporary file and then transfer only the path ot that image
+
+Only `:direct` works if Julia is accessed remotely with SSH but if Julia is on the same machine as kitty then one migh switch to `:temp_file` which might be slightly faster.
+To switch the mode one can do
+```julia
+set_kitty_config!(:transfer_mode, :temp_file)
+```
+
 ## Features
 KittyTerminalImages can display all data types than can be converted to either `png` or `svg`.
 
@@ -56,7 +67,7 @@ KittyTerminalImages can display all data types than can be converted to either `
 
 ## TODO list
 - [ ] Display LaTex images.
-- [ ] Support for SSH.
+- [X] Support for SSH.
 - [ ] Support for Tmux and screen.
 - [x] Add an option for setting the image output size.
 - [ ] Query for the terminal size and colors.
