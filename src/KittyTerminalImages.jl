@@ -7,6 +7,8 @@ using Cairo: FORMAT_ARGB32, CairoImageSurface, CairoContext
 import Cairo
 using Base.Multimedia: xdisplayable
 using ImageTransformations: imresize
+using ImageCore: RGBA, channelview, clamp01nan
+using CodecZlib: ZlibCompressor, ZlibCompressorStream
 
 import Base: display
 
@@ -27,12 +29,66 @@ function __init__()
 end
 
 
-function draw_temp_file(path::String)
-    cmd_prefix = transcode(UInt8, "\033_Gf=100,t=t,X=1,Y=1,a=T;")
-    cmd_postfix = transcode(UInt8, "\033\\")
+function draw_temp_file(img)
+
+    # TODO ensure that there is no racing condition with these tempfiles
+    path, io = mktemp()
+    ImageMagick.save_(Stream(format"PNG", io), img)
+    close(io)
+
     payload = transcode(UInt8, base64encode(path))
-    cmd = [cmd_prefix; payload; cmd_postfix]
-    write(stdout, cmd)
+    write_kitty_image_escape_sequence(stdout, payload, f=100, t='t', X=1, Y=1, a='T')
+end
+
+function draw_direct(img)
+
+    # TODO this adds some unnecessary channels for alpha and colors that are not always necessary
+    # TODO might be easiert to write to a png then we have some compression, then we can also maybe remove zlib
+    img_rgba = permutedims(channelview(RGBA.(img)), (1, 3, 2))
+    img_encoded = base64encode(ZlibCompressorStream(IOBuffer(vec(reinterpret(UInt8, img_rgba)))))
+
+    (_, width, height) = size(img_rgba)
+
+    buff = IOBuffer()
+    partitions = Iterators.partition(transcode(UInt8, img_encoded), 4096)
+    for (i, payload) in enumerate(partitions)
+
+        m = (i == length(partitions)) ? 0 : 1 # 0 if this is the last data chunk
+
+        if i == 1
+            write_kitty_image_escape_sequence(buff, payload, f=32, s=width, v=height, X=1, Y=1, a='T', o='z', m=m)
+        else
+            write_kitty_image_escape_sequence(buff, payload, m=m)
+        end
+
+    end
+
+    write(stdout, take!(buff))
+
+    return
+end
+
+# values for controll data: https://sw.kovidgoyal.net/kitty/graphics-protocol.html#control-data-reference
+function write_kitty_image_escape_sequence(io::IO, payload::AbstractVector{UInt8}; controll_data...)
+
+    cmd_prefix = "\033_G"
+    first_iteration = true
+    for (key, value) in controll_data
+        if first_iteration
+            first_iteration = false
+        else
+            cmd_prefix *= ','
+        end
+        cmd_prefix *= string(key)
+        cmd_prefix *= '='
+        cmd_prefix*= string(value)
+    end
+    cmd_prefix *= ';'
+    cmd_postfix = "\033\\"
+    cmd = [transcode(UInt8, cmd_prefix); payload; transcode(UInt8, cmd_postfix)]
+    write(io, cmd)
+
+    return
 end
 
 
@@ -86,7 +142,6 @@ function display(d::KittyDisplay, x)
     throw(MethodError(display, (x,)))
 end
 
-# TODO ensure that there is no racing condition with these tempfiles
 
 function display(d::KittyDisplay,
                  m::MIME"image/png", x; scale=get_kitty_config(:scale, 1.0))
@@ -95,10 +150,12 @@ function display(d::KittyDisplay,
     img = load(Stream(format"PNG", buff))
     img = imresize(img; ratio=scale)
 
-    path, io = mktemp()
-    save(Stream(format"PNG", io), img)
-    close(io)
-    draw_temp_file(path)
+    if get_kitty_config(:transfer_mode) == :direct
+        draw_direct(img)
+    else
+        draw_temp_file(img)
+    end
+
     return
 end
 
