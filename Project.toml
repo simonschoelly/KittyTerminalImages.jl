@@ -14,6 +14,7 @@ Rsvg = "c4c386cf-5103-5370-be45-f3a111cca3b8"
 
 [compat]
 Cairo = "1.0.4"
+CodecZlib = "0.7"
 FileIO = "1.4.0"
 ImageMagick = "1.1.5"
 ImageTransformations = "0.8.5"
