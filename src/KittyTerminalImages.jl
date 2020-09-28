@@ -7,8 +7,9 @@ using Cairo: FORMAT_ARGB32, CairoImageSurface, CairoContext
 import Cairo
 using Base.Multimedia: xdisplayable
 using ImageTransformations: imresize
-using ImageCore: RGBA, channelview, clamp01nan
+using ImageCore: RGBA, channelview
 using CodecZlib: ZlibCompressor, ZlibCompressorStream
+using Requires: @require
 
 import Base: display
 
@@ -26,8 +27,8 @@ include("configuration.jl")
 function __init__()
     # TODO verify that we are actually using kitty
     pushKittyDisplay!()
+    @require Compose="a81c6b42-2e10-5240-aca2-a61377ecd94b" include("integration/Compose.jl")
 end
-
 
 function draw_temp_file(img)
 
@@ -67,6 +68,9 @@ function draw_direct(img)
 
     return
 end
+
+# allows to define custom behaviour for special cases of show within this package
+show_custom(io::IO, m::MIME, x) = show(io, m , x)
 
 # values for controll data: https://sw.kovidgoyal.net/kitty/graphics-protocol.html#control-data-reference
 function write_kitty_image_escape_sequence(io::IO, payload::AbstractVector{UInt8}; controll_data...)
@@ -152,7 +156,7 @@ end
 function display(d::KittyDisplay,
                  m::MIME"image/png", x; scale=get_kitty_config(:scale, 1.0))
     buff = IOBuffer()
-    show(buff, m, x)
+    show_custom(buff, m, x)
     img = load(Stream(format"PNG", buff))
     img = imresize(img; ratio=scale)
 
@@ -169,7 +173,7 @@ function display(d::KittyDisplay,
                  m::MIME"image/svg+xml", x; scale=get_kitty_config(:scale, 1.0))
     # Write x to a cairo buffer a and the use the png display method
     buff = IOBuffer()
-    show(buff, m, x)
+    show_custom(buff, m, x)
     svg_data = String(take!(buff))
     handle = Rsvg.handle_new_from_data(svg_data)
     dims = Rsvg.handle_get_dimensions(handle)
