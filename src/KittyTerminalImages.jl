@@ -126,14 +126,20 @@ function pushKittyDisplay!()
     return
 end
 
-# Supported mime types, they are tried in order that they appear in this list
-# svg is before png so that we can apply scaling to a vector graphics instead of
-# pixels if both formats are supported
-
-kitty_mime_types = [MIME"image/svg+xml"(), MIME"image/png"()]
+# Supported mime types, they are tried in order that they appear of the list returned
+# svg should be preferred png so that we can apply scaling to a vector graphics instead of
+# pixels if both formats are supported but because of a bug, (https://github.com/simonschoelly/KittyTerminalImages.jl/issues/4),
+# that has not been solved yet, some svg's are not rendered correctly
+function kitty_mime_types()
+    if get_kitty_config(:prefer_png_to_svg)
+        [MIME"image/png"(), MIME"image/svg+xml"()]
+    else
+        [MIME"image/svg+xml"(), MIME"image/png"()]
+    end
+end
 
 function display(d::KittyDisplay, x)
-    for m in kitty_mime_types
+    for m in kitty_mime_types()
         if showable(m, x)
             display(d, m, x)
             return
