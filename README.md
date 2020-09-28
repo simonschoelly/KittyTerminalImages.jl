@@ -32,11 +32,13 @@ on top of the stack, execute the following:
 ```julia
 pushKittyDisplay!()
 ```
-You can also overwritte the general display behaviour so KittyTerminalImages is on top of the stack. This is a hack and can have
+You can also override the general display behaviour so KittyTerminalImages is on top of the stack. This is a hack and can have
 unwanted side effects. To do that, execute the following:
 ```julia
 forceKittyDisplay!()
 ```
+
+## Configuration
 
 ### Setting the scale
 If the images are too small or too large for your terminal,
@@ -45,30 +47,39 @@ you can specify a scale
 set_kitty_config!(:scale, 2.0) # scale all images by a factor 2
 ```
 
+### Setting preference for PNG or SVG
+Certain Julia objects can be drawn as either a PNG or a SVG image. In case both formats are possible,
+one can specify that PNG should be preferred by setting the ``:prefer_png_to_svg`` config value:
+```julia
+set_kitty_config!(:prefer_png_to_svg, true)
+```
+At the moment this value is set to `true` by default as in some cases the svg renderer creates some incorrect images.
+If the `:scale` config is also set, this has the disadvantage that scaled images may appear blurry.
+
 ### Setting the transfer mode
 To transfer the image from Julia to kitty, one can select between two transfer modes:
 * `:direct` (default) -- transfer the imagine with escape sequences
-* `:temp_file` -- transfer the imagine by writting it to a temporary file and then transfer only the path ot that image
+* `:temp_file` -- transfer the imagine by writing it to a temporary file and then transfer only the path of that image
 
-Only `:direct` works if Julia is accessed remotely with SSH but if Julia is on the same machine as kitty then one migh switch to `:temp_file` which might be slightly faster.
+Only `:direct` works if Julia is accessed remotely with SSH but if Julia is on the same machine as kitty then one might switch to `:temp_file` which might be slightly faster.
 To switch the mode one can do
 ```julia
 set_kitty_config!(:transfer_mode, :temp_file)
 ```
 
 ## Features
-KittyTerminalImages can display all data types than can be converted to either `png` or `svg`.
+KittyTerminalImages can display all data types than can be converted to either `PNG` or `SVG`.
 
 ## Limitations
 * Does not work over SSH yet.
-* Does not work with Tmux or screen yet.
+* Does not work with tmux or screen yet.
 * Can only display static images, there is no interaction.
 * There might be some problems with some Julia packages. If that is the case, feel free to open an issue or submit a PR with a fix.
 
 ## TODO list
-- [ ] Display LaTex images.
+- [ ] Display LaTeX images.
 - [X] Support for SSH.
-- [ ] Support for Tmux and screen.
+- [ ] Support for tmux and screen.
 - [x] Add an option for setting the image output size.
 - [ ] Query for the terminal size and colors.
 - [ ] Ensure that kitty is the actual terminal emulator.
