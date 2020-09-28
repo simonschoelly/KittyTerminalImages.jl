@@ -1,9 +1,10 @@
 # KittyTerminalImages.jl
-![](https://img.shields.io/badge/lifecycle-experimental-orange.svg)
+![](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
+[![pkgeval](https://juliahub.com/docs/KittyTerminalImages/pkgeval.svg)](https://juliahub.com/ui/Packages/KittyTerminalImages/gIOCR)
+[![version](https://juliahub.com/docs/KittyTerminalImages/version.svg)](https://juliahub.com/ui/Packages/KittyTerminalImages/gIOCR)
 
 ## Description
-A package that allows Julia to display images in the kitty terminal editor. This package is in an experimental stage and might
-be added to [TerminalExtensions.jl](https://github.com/Keno/TerminalExtensions.jl) later.
+A package that allows Julia to display images in the kitty terminal editor.
 
 ## Screenshots
 | | | |
@@ -71,7 +72,7 @@ set_kitty_config!(:transfer_mode, :temp_file)
 KittyTerminalImages can display all data types than can be converted to either `PNG` or `SVG`.
 
 ## Limitations
-* Does not work over SSH yet.
+* There are currently some unresolved issues with some SVG images.
 * Does not work with tmux or screen yet.
 * Can only display static images, there is no interaction.
 * There might be some problems with some Julia packages. If that is the case, feel free to open an issue or submit a PR with a fix.
@@ -82,7 +83,8 @@ KittyTerminalImages can display all data types than can be converted to either `
 - [ ] Support for tmux and screen.
 - [x] Add an option for setting the image output size.
 - [ ] Query for the terminal size and colors.
-- [ ] Ensure that kitty is the actual terminal emulator.
+- [ ] Allow specifying placement of the images - if possible have a mode where the terminal is split into a text and an image section.
+- [ ] Figure out if it possible to play animations.
 
 
 ## Similar packages
