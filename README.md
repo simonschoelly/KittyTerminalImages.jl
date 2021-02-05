@@ -39,6 +39,32 @@ unwanted side effects. To do that, execute the following:
 forceKittyDisplay!()
 ```
 
+Beware that KittyTerminalImages.jl relies on the `display` function to draw the plots, and this is *not* called automatically
+when you are writing a script, unless the plotting command is the very last command in the script. If you want to force the
+display of a plot, you can wrap the call with `display`:
+```julia
+# This is a script named "test.jl"
+
+using Plots
+using KittyTerminalImages
+
+println("Here is the first plot:")
+# We call "display" on plot's return value
+plot(sin, 0:0.1:2π) |> display
+println() # Force a newline
+
+# Another plot
+println("Here is another plot:")
+plot(exp, 0:0.1:1)
+plot!(log, 0.1:0.1:1) |> display  # Only call "display" on the last "plot!"
+println() # Force a newline
+
+println("End of the script")
+```
+
+The calls to `display` will make the plot appear when you run the script calling `julia test.jl` from the shell or writing
+`include("test.jl")` in the REPL.
+
 ## Configuration
 
 ### Setting the scale
