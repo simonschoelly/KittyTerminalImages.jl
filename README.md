@@ -39,6 +39,15 @@ unwanted side effects. To do that, execute the following:
 forceKittyDisplay!()
 ```
 
+### Makie
+
+It is possible to use [Makie.jl](https://github.com/JuliaPlots/Makie.jl) together with KittyTerminalImages although there is no interactivity nor any animations.
+After loading a Makie backend it might be necessary to run `AbstractPlotting.inline!(true)` so that the plots are shown in the terminal instead
+of an external window. In my experience that is necessary for the [GLMakie.jl](https://github.com/JuliaPlots/GLMakie.jl) backend
+but not for the [CairoMakie.jl](https://github.com/JuliaPlots/CairoMakie.jl) backend.
+
+### Running scripts
+
 Beware that KittyTerminalImages.jl relies on the `display` function to draw the plots, and this is *not* called automatically
 when you are writing a script, unless the plotting command is the very last command in the script. If you want to force the
 display of a plot, you can wrap the call with `display`:
