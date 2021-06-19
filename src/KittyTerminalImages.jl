@@ -6,10 +6,10 @@ using Rsvg
 using Cairo: FORMAT_ARGB32, CairoImageSurface, CairoContext
 import Cairo
 using Base.Multimedia: xdisplayable
-using ImageTransformations: imresize
 using ImageCore: RGBA, channelview
 using CodecZlib: ZlibCompressor, ZlibCompressorStream
 using Requires: @require
+using Interpolations: interpolate, BSpline, Linear
 
 import Base: display
 
@@ -23,6 +23,7 @@ export pushKittyDisplay!, forceKittyDisplay!, set_kitty_config!, get_kitty_confi
 struct KittyDisplay <: AbstractDisplay end
 
 include("configuration.jl")
+include("images.jl")
 
 function __init__()
     # TODO verify that we are actually using kitty
@@ -44,7 +45,7 @@ end
 function draw_direct(img)
 
     # TODO this adds some unnecessary channels for alpha and colors that are not always necessary
-    # TODO might be easiert to write to a png then we have some compression, then we can also maybe remove zlib
+    # TODO might be easier to write to a png then we have some compression, then we can also maybe remove zlib
     img_rgba = permutedims(channelview(RGBA.(img)), (1, 3, 2))
     img_encoded = base64encode(ZlibCompressorStream(IOBuffer(vec(reinterpret(UInt8, img_rgba)))))
 
@@ -72,7 +73,7 @@ end
 # allows to define custom behaviour for special cases of show within this package
 show_custom(io::IO, m::MIME, x) = show(io, m , x)
 
-# values for controll data: https://sw.kovidgoyal.net/kitty/graphics-protocol.html#control-data-reference
+# values for control data: https://sw.kovidgoyal.net/kitty/graphics-protocol.html#control-data-reference
 function write_kitty_image_escape_sequence(io::IO, payload::AbstractVector{UInt8}; controll_data...)
 
     cmd_prefix = "\033_G"
