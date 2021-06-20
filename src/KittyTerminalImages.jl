@@ -1,6 +1,5 @@
 module KittyTerminalImages
 
-using FileIO: load, save, Stream, @format_str
 using Base64: base64encode
 using Rsvg
 using Cairo: FORMAT_ARGB32, CairoImageSurface, CairoContext
@@ -10,12 +9,9 @@ using ImageCore: RGBA, channelview
 using CodecZlib: ZlibCompressor, ZlibCompressorStream
 using Requires: @require
 using Interpolations: interpolate, BSpline, Linear
+using PNGFiles
 
 import Base: display
-
-# this seem to be necessary to enforce the usage of ImageMagic -- ImageIO
-# produces an eof error.
-using ImageMagick
 
 export pushKittyDisplay!, forceKittyDisplay!, set_kitty_config!, get_kitty_config
 
@@ -35,7 +31,7 @@ function draw_temp_file(img)
 
     # TODO ensure that there is no racing condition with these tempfiles
     path, io = mktemp()
-    ImageMagick.save_(Stream(format"PNG", io), img)
+    PNGFiles.save(io, img)
     close(io)
 
     payload = transcode(UInt8, base64encode(path))
@@ -158,7 +154,8 @@ function display(d::KittyDisplay,
                  m::MIME"image/png", x; scale=get_kitty_config(:scale, 1.0))
     buff = IOBuffer()
     show_custom(buff, m, x)
-    img = load(Stream(format"PNG", buff))
+    seekstart(buff)  # we need to reset the IOBuffer to it's start
+    img = PNGFiles.load(buff)
     img = imresize(img; ratio=scale)
 
     if get_kitty_config(:transfer_mode) == :direct
