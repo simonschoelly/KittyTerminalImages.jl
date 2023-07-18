@@ -1,6 +1,6 @@
 name = "KittyTerminalImages"
 uuid = "b7fa5abe-5c7d-46c6-a1ae-1026d0d509b9"
-version = "0.3.2"
+version = "0.3.3"
 
 [deps]
 Base64 = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
@@ -13,11 +13,11 @@ Requires = "ae029012-a4dd-5104-9daa-d747884805df"
 Rsvg = "c4c386cf-5103-5370-be45-f3a111cca3b8"
 
 [compat]
-Cairo = "1.0.4"
-CodecZlib = "0.7"
-ImageCore = "0.8, 0.9"
-Interpolations = "0.13.2"
-PNGFiles = "0.3.7"
-Requires = "1.0.3"
-Rsvg = "1.0.0"
-julia = "1.4"
+Cairo = "^1.0.4"
+CodecZlib = "^0.7"
+ImageCore = "^0.8, ^0.9"
+Interpolations = "^0.13.2,^0.14"
+PNGFiles = "^0.3.7"
+Requires = "^1.0.3"
+Rsvg = "^1.0.0"
+julia = "≥ 1.4"
