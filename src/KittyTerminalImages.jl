@@ -13,7 +13,7 @@ using PNGFiles
 
 import Base: display
 
-export pushKittyDisplay!, forceKittyDisplay!, set_kitty_config!, get_kitty_config
+export pushKittyDisplay!, forceKittyDisplay!, set_kitty_config!, get_kitty_config, popKittyDisplay!
 
 
 struct KittyDisplay <: AbstractDisplay end
@@ -123,6 +123,14 @@ function pushKittyDisplay!()
     d = Base.Multimedia.displays
     if !isempty(d) && !isa(d[end], KittyDisplay)
         Base.Multimedia.pushdisplay(KittyDisplay())
+    end
+    return
+end
+
+function popKittyDisplay!()
+    d = Base.Multimedia.displays
+    if length(d) > 1 && isa(d[end], KittyDisplay) 
+        _ = Base.Multimedia.popdisplay()
     end
     return
 end
