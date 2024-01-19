@@ -130,7 +130,7 @@ end
 function popKittyDisplay!()
     d = Base.Multimedia.displays
     if length(d) > 1 && isa(d[end], KittyDisplay) 
-        _ = Base.Multimedia.popdisplay()
+        Base.Multimedia.popdisplay()
     end
     return
 end

@@ -33,6 +33,16 @@ on top of the stack, execute the following:
 ```julia
 pushKittyDisplay!()
 ```
+
+To stop using KittyTerminalImages, execute the following:
+```julia
+popKittyDisplay!()
+```
+
+This will remove the Kitty image display from the end
+of the display list, if it contains at least one
+other element.
+
 You can also override the general display behaviour so KittyTerminalImages is on top of the stack. This is a hack and can have
 unwanted side effects. To do that, execute the following:
 ```julia
