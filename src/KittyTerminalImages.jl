@@ -7,7 +7,6 @@ import Cairo
 using Base.Multimedia: xdisplayable
 using ImageCore: RGBA, channelview
 using CodecZlib: ZlibCompressor, ZlibCompressorStream
-using Requires: @require
 using Interpolations: interpolate, BSpline, Linear
 using PNGFiles
 
@@ -24,7 +23,6 @@ include("images.jl")
 function __init__()
     # TODO verify that we are actually using kitty
     pushKittyDisplay!()
-    @require Compose="a81c6b42-2e10-5240-aca2-a61377ecd94b" include("integration/Compose.jl")
 end
 
 function draw_temp_file(img)
