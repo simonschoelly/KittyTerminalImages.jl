@@ -1,0 +1,63 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+    tags: ["*"]
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "src/**"
+      - "test/**"
+      - "ext/**"
+      - "*.toml"
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+concurrency:
+  # Skip intermediate builds: always.
+  # Cancel intermediate builds: only if it is a pull request build.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+
+
+jobs:
+  test:
+    uses: ./.github/workflows/ReusableTest.yml
+    with:
+      os: ${{ matrix.os }}
+      version: ${{ matrix.version }}
+      arch: ${{ matrix.arch }}
+      allow_failure: ${{ matrix.allow_failure }}
+      # TODO enable codecov
+      run_codecov: false
+      # run_codecov: ${{ matrix.version == '1' && matrix.os == 'ubuntu-latest' }}
+    secrets:
+      codecov_token: ${{ secrets.CODECOV_TOKEN }}
+    strategy:
+      fail-fast: false
+      matrix:
+        version:
+          - "1.9"  # min version
+          - "1.10" # LTS
+          - "1"
+        os:
+          - ubuntu-latest
+          - macOS-latest
+          #- windows-latest
+        arch:
+          - x64
+        allow_failure: [false]
+
+        include:
+          - version: "nightly"
+            os: ubuntu-latest
+            arch: x64
+            allow_failure: true
+          - version: "nightly"
+            os: macOS-latest
+            arch: x64
+            allow_failure: true
+
